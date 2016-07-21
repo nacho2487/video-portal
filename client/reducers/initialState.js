@@ -1,3 +1,9 @@
 export default {
-  videos: []
+  videos: [],
+  video: {
+    name: '',
+    ratings: [],
+    _id: '',
+    description: ''
+  }
 };

@@ -1,0 +1,73 @@
+@import '../../../node_modules/bootstrap/less/variables.less';
+#app {
+  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #4d4d4d;
+  video{
+    background-color: #000;
+    height: 350px;
+    width: 500px;
+  }
+  .video {
+    background-color: #f8f8f8;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #6D6F71;
+    text-align: center;
+    .title{
+      display: block;
+      min-height: 40px;
+    }
+    .rating{
+      float: left;
+      display: block;
+      font-size: @font-size-h3;
+      margin-top: 5px;
+      .glyphicon-star{
+        color: #FFD700;
+      }
+    }
+    .clicked{
+      float: left;
+      margin-top: 13px;
+      margin-left: 5px;
+    }
+    .description{
+      padding-top: 5px;
+      text-align: left;
+      @media (max-width: @screen-lg){
+        font-size: 11px;
+      }
+    }
+  }
+
+  .video-col{
+    padding-left: 5px;
+    padding-right: 5px;
+
+    video{
+      height: 240px;
+      width: 100%;
+    }
+    .video{
+      max-height: 570px;
+    }
+    .description {
+      min-height: 300px;
+    }
+  }
+}
+
+.login-form {
+  margin: 0 auto;
+  max-width: 600px;
+  padding-top: 20px;
+  width: 90%;
+}
+
+.signout{
+  text-align: right;
+}
+
+nav {
+  padding-top: 20px;
+}

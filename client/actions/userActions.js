@@ -1,50 +1,44 @@
 import types from './actionTypes';
-import request from 'axios';
-import md5 from 'crypto-js/md5';
-import {browserHistory} from 'react-router';
 
-const signInFailed = (dispatch)=> {
-  dispatch({
-    type: types.SIGIN_IN_FAILED
-  });
+const signInFailed = (error) => {
+  return { type: types.SIGIN_IN_FAILED, error};
+};
+
+const signInSuccess = (username, sessionId) => {
+  return {type: types.SIGN_IN, username, sessionId};
+};
+
+const signOutSuccess = () => {
+  return {type: types.SIGN_OUT};
 };
 
 const signIn = (creds) => {
-  return (dispatch) => {
-    return request.post({
-      username: creds.userName,
-      password: md5(creds.password)
-    }).then((res) => {
-      if (res && res.status === 'success') {
-        sessionStorage.setItem('sessionId', res.sessionId);
-        dispatch({
-          type: types.SIGN_IN,
-          user: res.username
-        });
-        browserHistory.push('/');
+  return (dispatch, getState, api) => {
+    return api.signIn(creds).then((res) => {
+      const {status, sessionId, username, error} = res.data;
+      if (status === 'success') {
+        dispatch(signInSuccess(username, sessionId));
       } else {
-        signInFailed(dispatch);
+        dispatch(signInFailed(error));
       }
     }).catch((e) => {
-      signInFailed(dispatch);
+      throw e;
     });
-  }
+  };
 };
 
 const signOut = () => {
-  return (dispatch) => {
-    dispatch({
-      type: types.SIGN_OUT
+  return (dispatch, getState, api) => {
+    return api.signOut().then((res) => {
+      const {status} = res.data;
+      if (status === 'success') {
+        dispatch(signOutSuccess());
+      }
+    }).catch((e) => {
+      throw e;
     });
-    browserHistory.push('/login');
   };
-}
-
-const redirectToSignIn = () => {
-  return () => {
-    browserHistory.push('/login');
-  };
-}
+};
 
 const changeCredential = (delta) => {
   return {
@@ -53,10 +47,5 @@ const changeCredential = (delta) => {
   };
 };
 
-const closeToastr = ()=> {
-  return {
-    type: types.SIGN_IN_FORM_RESET
-  };
-};
 
-export {signIn, signOut, changeCredential, redirectToSignIn, closeToastr};
+export {signIn, signOut, changeCredential, signInSuccess, signInFailed, signOutSuccess};

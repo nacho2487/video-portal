@@ -4,30 +4,38 @@ import Header from './common/Header';
 import {connect} from 'react-redux';
 import * as userActions from './../actions/userActions';
 import {bindActionCreators} from 'redux';
+import {browserHistory} from 'react-router';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  _ensureSignIn() {
-    if (!(this.props.user && this.props.user.isSignedIn) && this.props.location.pathname !== 'login') {
-      this.props.userActions.redirectToSignIn();
-    }
+    this.onLogout = this.onLogout.bind(this);
   }
 
   componentDidMount() {
     this._ensureSignIn();
   }
-
-  componentDidUpdate(preProps, preState) {
-    this._ensureSignIn();
+  onLogout(e){
+    e.preventDefault();
+    this.props.signOut();
+  }
+ 
+  _ensureSignIn() {
+    if (!sessionStorage.getItem('sessionId') && this.props.location.pathname !== '/login') {
+      browserHistory.push('/login');
+    }
   }
 
+
+
 	render() {
+        const showLogout = this.props.location.pathname !== '/login';
 		return (
 			<div className="container-fluid">
-				<Header />
+				<Header
+                    showLogout={showLogout}
+                    onLogout={this.onLogout}
+                />
 				{this.props.children}
 			</div>
 		);
@@ -35,17 +43,30 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-	children: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    videos: PropTypes.array.isRequired,
+    location: PropTypes.object.isRequired,
+    userActions: PropTypes.object.isRequired,
+    children: PropTypes.object.isRequired,
+    signOut: PropTypes.func
+
 };
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user
+    user: state.user,
+    videos: state.videos
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+      signOut: function(){
+          dispatch(userActions.signOut()).then(function(){
+              sessionStorage.setItem('sessionId', '');
+              browserHistory.push('/login');
+          });
+      },
     userActions: bindActionCreators(userActions, dispatch)
   };
 };

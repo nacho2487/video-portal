@@ -6,16 +6,16 @@ import configureStore from './store/configureStore';
 import {Provider} from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import routes from './routes';
-import {loadVideos} from './actions/videoActions';
-import './content/css/styles.scss';
+import './content/css/styles.less';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 const store = configureStore();
-store.dispatch(loadVideos());
-
+function onUpdate(){
+	window.scrollTo(0, 0);
+}
 render(
 	<Provider store={store}>
-		<Router history={browserHistory} routes={routes} />
+		<Router onUpdate={onUpdate} history={browserHistory} routes={routes} />
 	</Provider>,
 	document.getElementById('app')
 );
