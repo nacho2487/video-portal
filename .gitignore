@@ -20,7 +20,7 @@ tmp
 node_modules
 
 # Editors
-.idea
+.idea/*
 *.iml
 
 # OS metadata
